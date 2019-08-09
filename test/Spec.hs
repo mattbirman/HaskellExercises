@@ -29,4 +29,4 @@ specs = do
       charsFromLines ("te" :| "st" :| EndOfList) == 't' :| 'e' :| 's' :| 't' :| EndOfList
 
     it "foldr" $
-      foldr (\a s -> a + 1 :| s) EndOfList (1 :| 2 :| 3 :| EndOfList) == (2 :| 3 :| 4 :| EndOfList)
+      foldr' (\a s -> a + 1 :| s) EndOfList (1 :| 2 :| 3 :| EndOfList) == (2 :| 3 :| 4 :| EndOfList)
