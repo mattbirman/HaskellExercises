@@ -1,6 +1,6 @@
 module FoldableExercises where
 
-import           Prelude hiding (replicate, sum, filter, foldr, take, map)
+import           Prelude hiding (replicate, sum, filter, foldr, take, map, repeat)
 import qualified Data.Foldable as DF (foldr)
 
 data MyList a
@@ -15,8 +15,8 @@ infixr 5 :|
 -- The replicate function creates a list that contains the `x` parameter count `times`.
 -- eg. replicate 3 "a" == "a" :| "a" :| "a" :| EndOfList
 replicate :: Int -> a -> MyList a
-replicate count x =
-  undefined
+replicate count x = take count (repeat x)
+  -- x :| replicate (count - 1) x
 
 
 -- Write out all the evaluation steps of replicate 3 "a". Put each
@@ -25,6 +25,9 @@ replicate count x =
 -- replicate 3 "a"
 -- "a" :| replicate (3 - 1) "a"
 -- ... (continue here)
+repeat :: a -> MyList a
+repeat a = a :| repeat a
+
 
 
 -- Implement the take function that returns a list that is only
@@ -32,8 +35,9 @@ replicate count x =
 -- eg. take 2 ('a' :| 'b' :| 'c' :| 'd' :| EndOfList) == ('a' :| 'b' :| EndOfList)
 -- eg. take 2 ('a' :| EndOfList) == ('a' :| EndOfList)
 take :: Int -> MyList a -> MyList a
-take count list =
-  undefined
+take 0 _ = EndOfList
+take _ EndOfList = EndOfList
+take n (head :| tail) = head :| take (n - 1) tail
 
 
 -- If we combined replicate and take like so:
@@ -51,25 +55,31 @@ take count list =
 -- using recursion.
 -- eg. countDownFrom 3 == (3 :| 2 :| 1 :| 0 :| EndOfList)
 countDownFrom :: Int -> MyList Int
+countDownFrom 0 =
+  0 :| EndOfList
 countDownFrom start =
-  undefined
+  start :| countDownFrom (start - 1)
 
 
 -- Implement a function that maps any value of a into a value of b
 -- for all the elements of a list. The order of the list should be
 -- retained.
--- eg. map (+1) (1 :| 3 :| 5 :| EndOfList) == (2 :| 4 :| 6 :| EndOfList)
+-- map (+1) (1 :| 3 :| 5 :| EndOfList) == (2 :| 4 :| 6 :| EndOfList)
 map :: (a -> b) -> MyList a -> MyList b
-map fn list =
-  undefined
+map _ EndOfList = EndOfList
+map fn (head :| tail) =
+  fn head :| map fn tail
 
 
 -- Implement a function that filters a list using a predicate function.
 -- The list elements should retain their original order
 -- eg. filter (/=3) (1 :| 3 :| 5 :| EndOfList) == (1 :| 5 :| EndOfList)
 filter :: (a -> Bool) -> MyList a -> MyList a
-filter predicate list =
-  undefined
+filter predicate EndOfList = EndOfList
+filter predicate (head :| tail) =
+
+  if predicate head then head :| filter predicate tail
+  else filter predicate tail
 
 
 -- Implement a function that takes all the strings in the input list
